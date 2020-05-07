@@ -47,8 +47,8 @@ class CMEModule:
         try:
             connection.execute(cradle)
             context.log.success("Executed msbuild on" + self.filename)
-            
-        except Exception e:
+
+        except Exception as e:
             context.log.error("Msbuild failed")
             context.log.debug("Error : ".format(str(e)))
 
