@@ -39,10 +39,10 @@ class CMEModule:
                 pass
         if self.arch == 'x64':
             winders = "%WINDIR%\\Microsoft.NET\\Framework64\\"+ self.ver+ "\\msbuild.exe"
-            command = '{} {} > file1.txt'.format(winders, self.targetFile)
+            command = '{} {} timeout 2 > file1.txt'.format(winders, self.targetFile)
         elif self.arch == 'x86':
             winders = "%WINDIR%\\Microsoft.NET\\Framework\\"+ self.ver+ "\\msbuild.exe"
-            command = '{} {} > file1.txt'.format(winders, self.targetFile)
+            command = '{} {} timeout 2 > file1.txt'.format(winders, self.targetFile)
         else:
             print("You need to supply the 'ARCH' command line argument :)")
         try:
