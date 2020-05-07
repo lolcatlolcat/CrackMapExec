@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 class CMEModule:
     '''
         Executes msbuild to build a malicious .xml file for C2 purposes.
@@ -17,7 +20,7 @@ class CMEModule:
             VER .NET Version targeted
         '''
         self.filename = 'cme.xml'
-        self.arch = 'x64'
+        self.arch = ''
         self.ver = 'v4.0.30319'
 
         if module_options and 'FILENAME' in module_options:
@@ -28,10 +31,11 @@ class CMEModule:
 
     def on_login(self, context, connection):
         if self.arch == 'x64':
-             if os.path.isdir(r(os.environ['WINDIR'] + "Microsoft.NET" + "Framework64")):
+            if os.path.isdir(r(os.environ['WINDIR'] + "Microsoft.NET" + "Framework64")):
                  command = ' '.join(os.environ['WINDIR'], "Microsoft.NET", "Framework64", self.ver, "msbuild.exe", self.filename)
             else:
                 print "msbuild doesn't exist or couldn't be found(x64)"
+
         elif self.arch == 'x86':
             if os.path.isdir(r(os.environ['WINDIR']), "Microsoft.NET", "Framework", self.ver, "msbuild.exe", self.filename)
                 command = ' '.join(os.environ['WINDIR'], "Microsoft.NET", "Framework", self.ver, "msbuild.exe", self.filename)
