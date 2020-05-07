@@ -44,7 +44,7 @@ class CMEModule:
         else:
             print("You need to supply the 'ARCH' command line argument :)")
 
-        connection.execte(cradle)
+        connection.execute(cradle)
         context.log.success("Executed msbuild on" + self.filename)
 
     def on_request(self, context, request):
