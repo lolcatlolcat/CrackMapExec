@@ -37,7 +37,7 @@ class CMEModule:
                 print("msbuild doesn't exist or couldn't be found(x64)")
 
         elif self.arch == 'x86':
-            if os.path.isdir(r(os.environ['WINDIR']), "Microsoft.NET", "Framework", self.ver, "msbuild.exe", self.filename)
+            if os.path.isdir(r(os.environ['WINDIR'], "Microsoft.NET", "Framework", self.ver, "msbuild.exe", self.filename))
                 command = ' '.join(os.environ['WINDIR'], "Microsoft.NET", "Framework", self.ver, "msbuild.exe", self.filename)
             else:
                 print("msbuild doesn't exist or couldn't be found (x86)")
