@@ -25,14 +25,15 @@ class CMEModule:
     def on_login(self, context, connection):
         shares = connection.shares()
         for share in shares:
-            if 'WRITE' in share['access'] and share['name'] not in ['R$', 'ADMIN$']:
+            if 'WRITE' in share['access'] and share['name'] not in ['NETLOGON$', 'ADMIN$']:
                 context.log.success('Found writable share: {}'.format(share['name']))
+                print('filename: {}'.format(self.filename))
                 with open(self.filename, 'rb') as file:
                     try:
-                        connection.conn.putFile(share['name'], "\\Windows\\Temp\\test.xml", file.read)
-                        self.targetFile = share['name'][:-1] + ':\\Windows\\Temp\\test.xml'
-                        print(self.targetFile)
-                        context.log.success('Uploaded file to {}:\\Windows\\Temp\\test.xml'.format(share['name']))
+                        connection.conn.putFile(share['name'], "\\test.xml", file.read)
+                        self.targetFile = share['name'][:-1] + ':\\test.xml'
+                        print('targetFile: {}'.format(self.targetFile))
+                        context.log.success('Uploaded file to {}:\\test.xml'.format(share['name']))
                     except Exception as e:
                         context.log.error('Error uploading file {}: {}'.format(share['name'][:-1], e))
             else:
