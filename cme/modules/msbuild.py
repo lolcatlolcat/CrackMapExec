@@ -43,7 +43,7 @@ class CMEModule:
             print("You need to supply the 'ARCH' command line argument :)")
 
         try:
-            connection.execute(cradle)
+            connection.ps_execute(cradle)
             context.log.success("Executed msbuild on" + self.filename)
 
         except Exception as e:
