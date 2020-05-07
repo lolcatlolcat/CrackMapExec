@@ -25,7 +25,7 @@ class CMEModule:
     def on_login(self, context, connection):
         shares = connection.shares()
         for share in shares:
-            if 'WRITE' in share['access'] and share['name'] not in ['NETLOGON$', 'ADMIN$']:
+            if 'WRITE' in share['access'] and share['name'] in ['C$']:
                 context.log.success('Found writable share: {}'.format(share['name']))
                 print('filename: {}'.format(self.filename))
                 with open(self.filename, 'rb') as file:
