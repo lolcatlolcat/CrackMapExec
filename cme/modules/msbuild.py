@@ -46,7 +46,7 @@ class CMEModule:
         else:
             print("You need to supply the 'ARCH' command line argument :)")
         try:
-            connection.execute(payload=command, get_output=False)
+            connection.execute(payload=command, get_output=True)
             context.log.success("Executed msbuild, hope you caught a shell!")
         except Exception as e:
             context.log.error("Msbuild failed")
